@@ -1,0 +1,41 @@
+# reglas_negocio.toml — reglas de negocio de la Cafetería escolar
+# Formato: docs/PROPUESTA_REGLAS_NEGOCIO.md del proyecto IA VOY
+
+[proyecto]
+nombre  = "Cafetería escolar"
+version = "1.0"
+
+[[regla]]
+id          = "RN-001"
+titulo      = "Dinero con Decimal"
+descripcion = "Precios, totales y propinas se calculan con Decimal; nunca con float."
+severidad   = "alta"
+rutas       = ["cafeteria/"]
+prohibido   = 'float\('
+historia    = "HU-01"
+criterio    = "Dados 3 cafés de $25.50, cuando se cobra, entonces el total es exactamente $76.50"
+
+[[regla]]
+id          = "RN-002"
+titulo      = "El stock nunca queda negativo"
+descripcion = "No se vende más de lo que hay en existencia; si un producto no alcanza, no se descuenta nada."
+severidad   = "alta"
+historia    = "HU-02"
+# Sin patrón: la verifica la prueba marcada @pytest.mark.regla("RN-002")
+
+[[regla]]
+id          = "RN-003"
+titulo      = "Cambios de precio y bajas solo por un administrador"
+descripcion = "Toda operación de administración lleva el decorador @requiere_admin."
+severidad   = "media"
+rutas       = ["cafeteria/admin.py"]
+obligatorio = '@requiere_admin'
+responsable = "Equipo backend"
+
+[[regla]]
+id          = "RN-004"
+titulo      = "Descuento máximo de 20 %"
+descripcion = "Ninguna venta lleva un descuento mayor al 20 % del subtotal."
+severidad   = "media"
+historia    = "HU-03"
+# Sin patrón: la verifica la prueba marcada @pytest.mark.regla("RN-004")
