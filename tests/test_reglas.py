@@ -18,21 +18,24 @@ def catalogo():
 
 
 @pytest.mark.regla("RN-001")
-def test_total_exacto_con_decimal(catalogo):
+def test_total_exacto_al_centavo(catalogo):
     assert ventas.total(catalogo, [(1, 3)]) == Decimal("76.50")
 
 
 @pytest.mark.regla("RN-002")
-def test_stock_no_queda_negativo(catalogo):
+def test_no_se_vende_lo_que_no_hay(catalogo):
     with pytest.raises(StockInsuficiente):
         ventas.total(catalogo, [(1, 1), (2, 3)])
-    assert catalogo.obtener(1).stock == 10  # no se descontó a medias
+    # No se descontó nada: ni el café que sí alcanzaba
+    assert catalogo.obtener(1).stock == 10 and catalogo.obtener(2).stock == 2
 
 
 @pytest.mark.regla("RN-003")
 def test_solo_admin_cambia_precio(catalogo):
     with pytest.raises(admin.SinPermiso):
         admin.cambiar_precio(CAJERO, catalogo, 1, "1.00")
+    with pytest.raises(admin.SinPermiso):
+        admin.eliminar_producto(CAJERO, catalogo, 1)
     admin.cambiar_precio(ADMIN, catalogo, 1, "27.00")
     assert catalogo.obtener(1).precio == Decimal("27.00")
 
